@@ -2,6 +2,8 @@ package okhttp;
 
 import helpers.PropertiesReader;
 import helpers.TestConfig;
+import models.ContactListModel;
+import models.ContactModel;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.testng.Assert;
@@ -24,5 +26,15 @@ public class GetAllContacts {
         String responsBody = response.body().string();
 
         Assert.assertTrue(response.isSuccessful());
+
+        ContactListModel contacts =
+                TestConfig.gson.fromJson(responsBody, ContactListModel.class);
+
+        for(ContactModel contact: contacts.getContacts())
+        {
+            System.out.println(contact.getName());
+            System.out.println(contact.getPhone());
+            System.out.println("-------------------------");
+        }
     }
 }
