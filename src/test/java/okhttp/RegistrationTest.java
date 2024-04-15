@@ -3,6 +3,7 @@ package okhttp;
 import helpers.PropertiesWriterXML;
 import helpers.TestHelper;
 import models.AuthenticationResponseModel;
+import models.ErrorModel;
 import models.NewUserModel;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -36,6 +37,13 @@ public class RegistrationTest implements TestHelper{
             PropertiesWriterXML propertiesWriterXML = new PropertiesWriterXML(FILE_PATH);
             propertiesWriterXML.setProperties(TOKEN_KEY,resultToken,false);
             Assert.assertTrue(response.isSuccessful());
+        }
+        else
+        {
+            ErrorModel errorModel = gson.fromJson(res, ErrorModel.class);
+            System.out.println(errorModel.getStatus());
+            System.out.println(errorModel.getError());
+            System.out.println(errorModel.getMessage());
         }
     }
 
