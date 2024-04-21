@@ -13,33 +13,32 @@ import java.sql.SQLException;
 
 public class addNewContactPositive implements TestHelper {
     String idResult;
+    @Test
+    public void addNewContact() throws IOException, SQLException {
+        ContactModel contactModel = new ContactModel(
+                NameAndLastNameGenerator.generateName(),
+                NameAndLastNameGenerator.generateLastName(),
+                EmailGenerator.generateEmail(7,5,3),
+                PhoneNumberGenerator.generatePhoneNumber(),
+                AddressGenerator.generateAddress(),"mydesc");
 
-//@Test
-public void addNewContact() throws IOException {
-    ContactModel contactModel = new ContactModel
-            (
-                    NameAndLastNameGenerator.generateName(),
-                    NameAndLastNameGenerator.generateLastName(),
-                    EmailGenerator.generateEmail(5, 3, 2),
-                    PhoneNumberGenerator.generatePhoneNumber(),
-                    AddressGenerator.generateAddress(),
-                    "ssd"
-            );
-    RequestBody requestBody=RequestBody.create(gson.toJson(contactModel),JSON);
-    Request request = new Request.Builder()
-            .url(ADD_CONTACT_PATH)
-            .addHeader(AuthorizationHeader, PropertiesReaderXML.getProperty("token"))
-            .post(requestBody).build();
+        RequestBody requestBody=RequestBody.create(gson.toJson(contactModel),JSON);
+        Request request = new Request.Builder()
+                .url(ADD_CONTACT_PATH)
+                .addHeader(AuthorizationHeader, PropertiesReaderXML.getProperty("token"))
+                .post(requestBody).build();
 
-    Response response = client.newCall(request).execute();
-    ContactResponseModel contactResponseModel =
-            gson.fromJson(response.body().string(), ContactResponseModel.class);
-    String responseMsg = contactResponseModel.getMessage();
-    idResult = IdExtractor.extractId(responseMsg);
+        Response response = client.newCall(request).execute();
+        ContactResponseModel contactResponseModel =
+                gson.fromJson(response.body().string(), ContactResponseModel.class);
+        String responseMsg = contactResponseModel.getMessage();
+        idResult = IdExtractor.extractId(responseMsg);
 
-    System.out.println("ID: "+idResult);
-    Assert.assertTrue(response.isSuccessful());
-    System.out.println("!add contact end!");
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        databaseConnection.contactDatabaseRecorder(idResult, contactModel);
+
+        System.out.println("Message : "+idResult);
+        Assert.assertTrue(response.isSuccessful());
     }
     @Test
     public void deleteContactByID() throws IOException, SQLException {

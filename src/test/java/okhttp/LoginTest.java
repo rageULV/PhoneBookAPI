@@ -2,6 +2,7 @@ package okhttp;
 
 import helpers.PropertiesReader;
 import helpers.PropertiesWriter;
+import helpers.PropertiesWriterXML;
 import helpers.TestConfig;
 import models.*;
 import okhttp3.Request; // класс Request из библиотеки okhttp3 используется для создания HTTP-запросов.
@@ -11,6 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import java.io.IOException;
 import static helpers.TestConfig.gson;
+import static helpers.TestHelper.FILE_PATH;
 
 public class LoginTest {
 
@@ -45,7 +47,8 @@ public class LoginTest {
                     gson.fromJson(response.body().string(),
                             AuthenticationResponseModel.class);
 
-            PropertiesWriter.writeProperties("token",responseModel.getToken());
+            PropertiesWriterXML propertiesWriterXML = new PropertiesWriterXML(FILE_PATH);
+            propertiesWriterXML.setProperties("token",responseModel.getToken(),false);
 
             Assert.assertTrue(response.isSuccessful());
         }

@@ -1,6 +1,9 @@
 package models;
 
 public class ContactModel {
+    public ContactModel() {
+
+    }
     @Override
     public String toString() {
         return "ContactModel{" +
